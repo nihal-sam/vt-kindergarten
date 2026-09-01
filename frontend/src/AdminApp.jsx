@@ -537,8 +537,8 @@ function Dashboard({ admin, logout }) {
                       <td style={s.td}><span style={{ ...s.badge, background: a.status === 'approved' ? 'rgba(52,211,153,0.15)' : a.status === 'rejected' ? 'rgba(239,68,68,0.12)' : 'rgba(255,107,53,0.1)', color: a.status === 'approved' ? '#059669' : a.status === 'rejected' ? '#dc2626' : '#FF6B35' }}>{a.status || 'pending'}</span></td>
                       <td style={{ ...s.td, whiteSpace: 'nowrap' }}>{formatDate(a.created_at)}</td>
                       <td style={{ ...s.td, whiteSpace: 'nowrap' }}>
-                        <button style={s.viewBtn} title="View" onClick={(e) => { e.stopPropagation(); setViewItem({ type: 'admission', data: a }); }}>View</button>
-                        <button style={s.delBtn} title="Delete" onClick={(e) => { e.stopPropagation(); deleteRecord('admissions', a.id); }}>Delete</button>
+                        <button style={s.viewBtn} title="View" onClick={(e) => { e.stopPropagation(); setViewItem({ type: 'admission', data: a }); }}><EyeIcon /></button>
+                        <button style={s.delBtn} title="Delete" onClick={(e) => { e.stopPropagation(); deleteRecord('admissions', a.id); }}><TrashIcon /></button>
                       </td>
                     </tr>
                   ))}
@@ -576,8 +576,8 @@ function Dashboard({ admin, logout }) {
                       <td style={{ ...s.td, maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.message}</td>
                       <td style={{ ...s.td, whiteSpace: 'nowrap' }}>{formatDate(e.created_at)}</td>
                       <td style={{ ...s.td, whiteSpace: 'nowrap' }}>
-                        <button style={s.viewBtn} title="View" onClick={(e) => { e.stopPropagation(); setViewItem({ type: 'enquiry', data: e }); }}>View</button>
-                        <button style={s.delBtn} title="Delete" onClick={(e) => { e.stopPropagation(); deleteRecord('enquiries', e.id); }}>Delete</button>
+                        <button style={s.viewBtn} title="View" onClick={(evt) => { evt.stopPropagation(); setViewItem({ type: 'enquiry', data: e }); }}><EyeIcon /></button>
+                        <button style={s.delBtn} title="Delete" onClick={(evt) => { evt.stopPropagation(); deleteRecord('admissions', e.id); }}><TrashIcon /></button>
                       </td>
                     </tr>
                   ))}
@@ -600,19 +600,33 @@ function Dashboard({ admin, logout }) {
               </h2>
               <button style={s.closeX} onClick={() => setViewItem(null)}>Close</button>
             </div>
+            
             <div style={{ display: 'grid', gap: 12 }}>
-              {Object.entries(viewItem.data)
-                .filter(([k]) => k !== 'id' && k !== 'updated_at')
-                .map(([k, v]) => (
-                  <div key={k} style={{ display: 'flex', gap: 16, borderBottom: '1px solid #f0f0f0', paddingBottom: 10 }}>
-                    <span style={{ fontWeight: 800, fontSize: 11, color: '#888', minWidth: 140, textTransform: 'uppercase', letterSpacing: '0.5px', paddingTop: 2 }}>
-                      {k.replace(/_/g, ' ')}
-                    </span>
-                    <span style={{ fontSize: 15, color: '#333', flex: 1, wordBreak: 'break-word' }}>
-                      {k === 'created_at' ? formatDate(v) : (String(v) || '-')}
-                    </span>
-                  </div>
-                ))}
+              {viewItem.type === 'admission' ? (
+                <>
+                  <ModalRow label="Child Name" value={viewItem.data.child_name} />
+                  <ModalRow label="Date of Birth" value={viewItem.data.dob} />
+                  <ModalRow label="Gender" value={viewItem.data.gender} />
+                  <ModalRow label="Program" value={viewItem.data.program} />
+                  <hr style={{ border: 'none', borderBottom: '1px solid #f0f0f0', margin: '8px 0' }} />
+                  <ModalRow label="Parent Name" value={viewItem.data.parent_name} />
+                  <ModalRow label="Relation" value={viewItem.data.relation} />
+                  <ModalRow label="Phone" value={viewItem.data.phone} />
+                  <ModalRow label="Email" value={viewItem.data.email} />
+                  <ModalRow label="Address" value={viewItem.data.address} />
+                  <ModalRow label="Status" value={viewItem.data.status} />
+                  <ModalRow label="Date Submitted" value={formatDate(viewItem.data.created_at)} />
+                </>
+              ) : (
+                <>
+                  <ModalRow label="Name" value={viewItem.data.child_name || viewItem.data.name} />
+                  <ModalRow label="Phone" value={viewItem.data.phone} />
+                  <ModalRow label="Email" value={viewItem.data.email} />
+                  <ModalRow label="Program" value={viewItem.data.program} />
+                  <ModalRow label="Message" value={viewItem.data.message} />
+                  <ModalRow label="Date Submitted" value={formatDate(viewItem.data.created_at)} />
+                </>
+              )}
             </div>
             <button style={s.closeBtn} onClick={() => setViewItem(null)}>Close</button>
           </div>
@@ -636,6 +650,25 @@ export default function AdminApp() {
   if (!isAuth) return <LoginPage />;
   return <Dashboard admin={admin} logout={logout} />;
 }
+
+const ModalRow = ({ label, value }) => (
+  <div style={{ display: 'flex', gap: 16, borderBottom: '1px solid #f0f0f0', paddingBottom: 10 }}>
+    <span style={{ fontWeight: 800, fontSize: 11, color: '#888', minWidth: 140, textTransform: 'uppercase', letterSpacing: '0.5px', paddingTop: 2 }}>
+      {label}
+    </span>
+    <span style={{ fontSize: 15, color: '#333', flex: 1, wordBreak: 'break-word' }}>
+      {value || '-'}
+    </span>
+  </div>
+);
+
+const EyeIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+);
+
+const TrashIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+);
 
 const s = {
   loginWrap: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg,#1a1a2e,#16213e)', fontFamily: "'Nunito',sans-serif" },
@@ -700,8 +733,8 @@ const s = {
   tr: { borderBottom: '1px solid #f5f5f5' },
   td: { padding: '13px 14px', fontSize: 14, color: '#333' },
   badge: { background: 'rgba(255,107,53,0.1)', color: '#FF6B35', padding: '3px 10px', borderRadius: 50, fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap' },
-  viewBtn: { background: 'rgba(78,205,196,0.12)', border: 'none', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', marginRight: 6, fontSize: 14 },
-  delBtn: { background: 'rgba(239,68,68,0.1)', border: 'none', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', fontSize: 14 },
+  viewBtn: { background: 'rgba(78,205,196,0.12)', color: '#4ECDC4', border: 'none', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', marginRight: 6, fontSize: 14, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' },
+  delBtn: { background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: 'none', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', fontSize: 14, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' },
   overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 },
   modal: { background: 'white', borderRadius: 20, padding: '36px 40px', maxWidth: 600, width: '90vw', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' },
   closeX: { background: '#f0f0f0', border: 'none', borderRadius: 8, width: 60, height: 36, cursor: 'pointer', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' },
