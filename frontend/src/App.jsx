@@ -34,13 +34,11 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (loading || ageCalculatorTouched) return undefined;
-
-    const timer = setTimeout(() => {
-      if (!ageCalculatorTouched) setShowEligibilityPrompt(true);
-    }, 7000);
-
-    return () => clearTimeout(timer);
+    // if (loading || ageCalculatorTouched) return undefined;
+    // const timer = setTimeout(() => {
+    //   if (!ageCalculatorTouched) setShowEligibilityPrompt(true);
+    // }, 7000);
+    // return () => clearTimeout(timer);
   }, [loading, ageCalculatorTouched]);
 
   useEffect(() => {
