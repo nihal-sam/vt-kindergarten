@@ -111,8 +111,9 @@ export default function App() {
 }
 
 function AgeEligibilityPromptModal({ onConfirm, onClose }) {
-  return (
-    <div className="enquiry-prompt-overlay" onClick={onClose}>
+  return null;
+  // return (
+  //   <div className="enquiry-prompt-overlay" onClick={onClose}>
       <div className="enquiry-prompt-scene" aria-hidden="true">
         <div className="enquiry-character enquiry-character-jerry">
           <img src="/assets/hero-elephant-bgless-v2.png" alt="" />
