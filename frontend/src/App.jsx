@@ -99,12 +99,12 @@ export default function App() {
         <section id="instagram"><InstagramSection /></section>
         <section id="contact"><Contact /></section>
       </main>
-      {showEligibilityPrompt && (
+      {/* showEligibilityPrompt && (
         <AgeEligibilityPromptModal
           onConfirm={goToEligibility}
           onClose={() => setShowEligibilityPrompt(false)}
         />
-      )}
+      ) */}
       <Footer />
     </div>
   );
